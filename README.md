@@ -1,5 +1,6 @@
-# errorx [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fchoestelus%2Ferrorx.svg?type=small)](https://app.fossa.com/projects/git%2Bgithub.com%2Fchoestelus%2Ferrorx?ref=badge_small) [![go.dev reference](https://img.shields.io/badge/go.dev-reference-007d9c?logo=go&logoColor=white&style=flat-square)](https://pkg.go.dev/github.com/choestelus/errorx)
-
+# errorx
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fchoestelus%2Ferrorx.svg?type=small)](https://app.fossa.com/projects/git%2Bgithub.com%2Fchoestelus%2Ferrorx?ref=badge_small)
+[![godoc reference](https://img.shields.io/badge/go.dev-reference-007d9c?logo=go&logoColor=white&style=flat-square)](https://godoc.org/github.com/choestelus/errorx)
 
 Package errorx provides frequently used errors construct (atleast for the author).
 
