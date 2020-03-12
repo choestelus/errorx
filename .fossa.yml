@@ -1,0 +1,14 @@
+version: 2
+cli:
+    server: https://app.fossa.com
+    fetcher: custom
+    project: github.com/choestelus/errorx
+analyze:
+    modules:
+        -   name: github.com/choestelus/errorx
+            type: go
+            target: github.com/choestelus/errorx 
+            strategy: gomodules
+            path: .
+            options:
+                allow-unresolved: true
