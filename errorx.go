@@ -14,9 +14,10 @@ import (
 // E defines common error information for inspecting
 // and displaying to various format
 type E struct {
-	e       error
-	Code    string `json:"code"`
-	Message string `json:"message"`
+	e              error
+	Code           string `json:"code"`
+	Message        string `json:"message"`
+	HTTPStatusCode int    `json:"-"`
 }
 
 // New returns stub error E
