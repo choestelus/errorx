@@ -24,33 +24,42 @@ func ErrorExtractor() gin.HandlerFunc {
 		if err == nil {
 			return
 		}
-
-		switch ae := err.Err.(type) {
-		case errorx.E:
-			code := initHTTPStatusCode(ae.HTTPStatusCode)
-			c.JSON(code, unwind(&ae))
-		case *errorx.E:
-			code := initHTTPStatusCode(ae.HTTPStatusCode)
-			c.JSON(code, unwind(ae))
-		default:
-			return
-		}
+		c.PureJSON(http.StatusInternalServerError, unwind(err.Err))
+		c.Abort()
 
 	}
 }
 
-func unwind(e *errorx.E) []map[string]interface{} {
-	errMessages := []map[string]interface{}{}
-	for {
-		errMessage := map[string]interface{}{
-			"code":    e.Code,
-			"message": e.Message,
-		}
-		errMessages = append(errMessages, errMessage)
-
-		if wrappedE := errors.Unwrap(e); wrappedE == nil {
-			break
-		}
+func unwind(e error) (errorMessages []map[string]interface{}) {
+	if e == nil {
+		return nil
 	}
-	return errMessages
+	switch err := e.(type) {
+	case errorx.E:
+		errMessage := map[string]interface{}{
+			"code":    err.Code,
+			"message": err.Error(),
+		}
+		if wrappedE := err.Unwrap(); wrappedE == nil {
+			return []map[string]interface{}{errMessage}
+		}
+		return append(unwind(err.Unwrap()), errMessage)
+	case *errorx.E:
+		errMessage := map[string]interface{}{
+			"code":    err.Code,
+			"message": err.Error(),
+		}
+		if wrappedE := err.Unwrap(); wrappedE == nil {
+			return []map[string]interface{}{errMessage}
+		}
+		return append(unwind(err.Unwrap()), errMessage)
+	case error:
+		errMessage := map[string]interface{}{
+			"code":    "std go error",
+			"message": err.Error(),
+		}
+		return append(unwind(errors.Unwrap(err)), errMessage)
+	default:
+		return unwind(errors.Unwrap(e))
+	}
 }
