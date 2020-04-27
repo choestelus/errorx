@@ -8,13 +8,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func initHTTPStatusCode(code int) int {
-	if code == 0 {
-		return http.StatusInternalServerError
-	}
-	return code
-}
-
 // ErrorExtractor unwinds and returns wrapped errors as stack trace
 func ErrorExtractor() gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -24,9 +17,16 @@ func ErrorExtractor() gin.HandlerFunc {
 		if err == nil {
 			return
 		}
-		c.PureJSON(http.StatusInternalServerError, unwind(err.Err))
-		c.Abort()
 
+		if !c.Writer.Written() && c.Writer.Status() == 200 {
+			c.Writer.WriteHeader(http.StatusInternalServerError)
+		}
+
+		c.Abort()
+		c.PureJSON(
+			c.Writer.Status(),
+			gin.H{"errors": unwind(err.Err)},
+		)
 	}
 }
 

@@ -2,6 +2,7 @@ package ginerrorx
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -41,7 +42,6 @@ func TestErrorExtractorMiddleware(t *testing.T) {
 	r.Use(ErrorExtractor())
 	r.GET("/test-stacktrace", func(c *gin.Context) {
 		c.Error(e)
-		c.Status(http.StatusBadRequest)
 	})
 
 	req, reqErr := http.NewRequest(http.MethodGet, "/test-stacktrace", nil)
@@ -52,10 +52,29 @@ func TestErrorExtractorMiddleware(t *testing.T) {
 	body := rec.Body.String()
 	require.NotEmpty(t, body)
 
-	encodedJSONErr, err := json.Marshal(unwind(e))
+	encodedJSONErr, err := json.Marshal(gin.H{"errors": unwind(e)})
 	require.NoError(t, err)
 	require.JSONEq(t, string(encodedJSONErr), body)
 
 	require.Contains(t, rec.Header().Get("Content-Type"), "application/json")
 	require.Equal(t, http.StatusInternalServerError, rec.Code)
+}
+
+func TestErrorExtractorMiddlewareHTTPStatus(t *testing.T) {
+	gin.SetMode(gin.TestMode)
+	rec := httptest.NewRecorder()
+
+	c, r := gin.CreateTestContext(rec)
+	r.Use(ErrorExtractor())
+	r.GET("/test-stacktrace", func(c *gin.Context) {
+		c.Status(http.StatusBadRequest)
+		c.Error(errors.New("something went wrong"))
+	})
+
+	req, reqErr := http.NewRequest(http.MethodGet, "/test-stacktrace", nil)
+	require.NoError(t, reqErr)
+	c.Request = req
+
+	r.ServeHTTP(rec, c.Request)
+	require.Equal(t, http.StatusBadRequest, rec.Code)
 }
