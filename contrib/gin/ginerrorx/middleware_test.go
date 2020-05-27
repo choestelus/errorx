@@ -8,8 +8,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/choestelus/errorx"
 	"github.com/gin-gonic/gin"
+	"github.com/meronakun/errorx"
 	"github.com/stretchr/testify/require"
 )
 

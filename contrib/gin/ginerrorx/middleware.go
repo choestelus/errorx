@@ -4,8 +4,8 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/choestelus/errorx"
 	"github.com/gin-gonic/gin"
+	"github.com/meronakun/errorx"
 )
 
 // ErrorExtractor unwinds and returns wrapped errors as stack trace

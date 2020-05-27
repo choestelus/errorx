@@ -1,4 +1,4 @@
-module github.com/choestelus/errorx
+module github.com/meronakun/errorx
 
 go 1.14
 
