@@ -4,7 +4,7 @@
 
 Package errorx provides frequently used errors construct (atleast for the author).
 
-`go get -v github.com/choestelus/errorx`
+`go get -v github.com/meronakun/errorx`
 
 ## License
 
